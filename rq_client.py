@@ -211,14 +211,33 @@ def list_work_items(limit: int = DEFAULT_LIMIT) -> list[dict[str, Any]]:
     live_statuses = {"queued", "started", "deferred", "scheduled"}
     jobs = list_jobs(None, "all", max(1, min(limit, MAX_LIMIT)), 0).get("jobs", [])
     work_items: list[dict[str, Any]] = []
+    external_by_key: dict[str, dict[str, Any]] = {}
     for item in jobs:
         lifecycle = item.get("lifecycle") or {}
         rq_status = str(item.get("status") or "")
         is_rq_live = rq_status in live_statuses
         is_external_open = lifecycle.get("terminal") is False
-        if is_rq_live or is_external_open:
-            item["work_scope"] = "rq_live" if is_rq_live else "external_unconfirmed"
+        if is_rq_live:
+            item["work_scope"] = "rq_live"
             work_items.append(item)
+            continue
+        if is_external_open:
+            task = item.get("task") or {}
+            key_parts = [
+                str(task.get("resource_key") or ""),
+                str(task.get("name") or ""),
+                str(task.get("project") or ""),
+                str(task.get("kind") or ""),
+                str(task.get("source") or ""),
+            ]
+            key = "|".join(key_parts)
+            item["work_scope"] = "external_unconfirmed"
+            item["work_key"] = key
+            current = external_by_key.get(key)
+            if current is None or str(item.get("created_at") or "") > str(current.get("created_at") or ""):
+                external_by_key[key] = item
+    work_items.extend(external_by_key.values())
+    work_items.sort(key=lambda item: item.get("created_at") or "", reverse=True)
     return work_items[: max(1, min(limit, MAX_LIMIT))]
 
 

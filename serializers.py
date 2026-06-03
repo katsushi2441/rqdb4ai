@@ -187,9 +187,10 @@ def job_lifecycle(job: Any, rq_status: str) -> dict[str, Any]:
         scope = str(result.get("completion_scope") or result.get("scope") or "").strip().lower()
         status = str(result.get("status") or "").strip().lower()
         trigger_started = bool(result.get("trigger_started"))
+        business_terminal = result.get("business_terminal")
         items = result.get("items", 0)
         note = safe_text(result.get("note"), 500)
-        if scope == "trigger" or trigger_started:
+        if scope == "trigger" or business_terminal is False:
             return {
                 "state": "triggered",
                 "label": "起動済み",
