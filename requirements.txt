@@ -1,0 +1,5 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+rq>=1.16
+redis>=5.0
+pydantic>=2.0

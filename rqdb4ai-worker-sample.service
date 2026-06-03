@@ -1,0 +1,19 @@
+[Unit]
+Description=Kurage RQ Dashboard for AI sample worker
+After=redis-server.service
+Requires=redis-server.service
+
+[Service]
+Type=simple
+User=kojima
+WorkingDirectory=/home/kojima/work/rqdb4ai
+Environment=PYTHONUNBUFFERED=1
+EnvironmentFile=-/home/kojima/work/rqdb4ai/rqdb4ai.env
+ExecStart=/usr/bin/python3 -m rq worker rqdb4ai-sample --url redis://127.0.0.1:6379/0
+Restart=always
+RestartSec=10
+StandardOutput=append:/home/kojima/rqdb4ai_worker.log
+StandardError=append:/home/kojima/rqdb4ai_worker.log
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+.env
+*.env
+rqdb4ai.env
+
+web/config.php
+
+run_worker_with_*_env.sh
+
+.DS_Store
