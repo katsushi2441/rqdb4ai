@@ -135,23 +135,23 @@ if (isset($_GET['proxy'])) {
   </div>
   <div id="error" class="err"></div>
   <div class="grid">
-    <div class="card"><div id="mWork" class="metric">-</div><div class="label">未完了ワーク</div></div>
-    <div class="card"><div id="mQueues" class="metric">-</div><div class="label">RQ実行キュー</div></div>
-    <div class="card"><div id="mWorkers" class="metric">-</div><div class="label">RQ Worker</div></div>
-    <div class="card"><div id="mLive" class="metric">-</div><div class="label">RQ 待機/実行</div></div>
+    <div class="card"><div id="mWork" class="metric">-</div><div class="label">未完了</div></div>
+    <div class="card"><div id="mQueues" class="metric">-</div><div class="label">実行レーン</div></div>
+    <div class="card"><div id="mWorkers" class="metric">-</div><div class="label">実行プロセス</div></div>
+    <div class="card"><div id="mLive" class="metric">-</div><div class="label">待機/実行</div></div>
     <div class="card"><div id="mHistory" class="metric">-</div><div class="label">履歴 RQ完了/失敗</div></div>
   </div>
 
   <div class="section card">
     <div class="toolbar">
-      <strong>未完了ワーク</strong><span class="muted">RQ実行中、または外部処理の完了確認が残っている仕事</span>
+      <strong>未完了</strong><span class="muted">まだ終わっていないジョブ</span>
     </div>
     <div id="workItems" class="jobs"></div>
   </div>
 
   <div class="section card">
     <div class="toolbar">
-      <strong>RQ実行キュー</strong><span class="muted">Redis/RQで現在処理対象になっているキュー。外部処理の完了状態ではありません</span>
+      <strong>実行レーン</strong><span class="muted">ジョブを処理する流れ。待機・実行・未完了をまとめて表示</span>
     </div>
     <div id="queues" class="queue-grid"></div>
   </div>
@@ -173,7 +173,7 @@ if (isset($_GET['proxy'])) {
   </div>
 
   <div class="section card">
-    <div class="toolbar"><strong>RQ Worker</strong><span class="muted">キューを監視してRQジョブを処理する常駐プロセス</span></div>
+    <div class="toolbar"><strong>実行プロセス</strong><span class="muted">ジョブを処理する常駐プロセス</span></div>
     <div id="workers" class="jobs"></div>
   </div>
 </div>
@@ -220,6 +220,14 @@ function resourceLabel(j){
   if(t.ollama_host || t.ollama_model) return ['ollama', t.ollama_host || '?', t.ollama_model || t.model || '?'].join(':');
   return '';
 }
+function laneWorkCounts(items){
+  const counts = {};
+  (items || []).forEach(j => {
+    const q = j.queue || '-';
+    counts[q] = (counts[q] || 0) + 1;
+  });
+  return counts;
+}
 function renderTabs(){
   document.getElementById('tabs').innerHTML = statuses.map(([s,l]) => `<button class="btn tab ${s===currentStatus?'active':''}" onclick="currentStatus='${s}';renderTabs();loadJobs();">${l}</button>`).join('');
 }
@@ -242,11 +250,13 @@ async function loadSummary(){
   const cur = select.value;
   select.innerHTML = '<option value="">全履歴キュー</option>' + hqs.map(q=>`<option value="${esc(q.name)}">${esc(q.name)}</option>`).join('');
   select.value = cur;
+  const workByLane = laneWorkCounts(workItems);
   renderWorkItems(workItems);
   document.getElementById('queues').innerHTML = qs.map(q => `
     <div class="card">
       <div class="queue-name mono">${esc(q.name)}</div>
       <div class="chips">
+        <span class="chip ${workByLane[q.name] ? 'run' : ''}">未完了 ${workByLane[q.name]||0}</span>
         <span class="chip">待機 ${q.queued||0}</span>
         <span class="chip run">実行 ${q.started||0}</span>
         <span class="chip">予定 ${q.scheduled||0}</span>
@@ -273,12 +283,11 @@ function renderWorkItems(items){
     const lifecycle = j.lifecycle || {};
     const label = j.status_label || lifecycle.label || statusLabel(st);
     const state = lifecycle.state || st;
-    const scope = j.work_scope === 'external_unconfirmed' ? '外部未確認' : 'RQ未完了';
     const resource = resourceLabel(j);
     const note = lifecycle.note ? `<div class="resource-line">${esc(lifecycle.note)}</div>` : '';
     return `<div class="job">
-      <div><span class="status ${esc(state)}">${esc(label)}</span><div class="mono muted">${esc((j.id||'').slice(0,12))}</div><div class="muted mini">${esc(scope)}</div></div>
-      <div><div><strong>${esc(j.queue||'-')}</strong> <span class="muted">${esc((j.task&&j.task.name)||'')}</span></div><div class="preview">${esc(j.input_preview || j.description || '')}</div>${resource?`<div class="resource-line mono">${esc(resource)}</div>`:''}${note}<div class="time-line"><span>RQ: ${esc(statusLabel(st))}</span><span>作成 ${esc(fmtTime(j.created_at))}</span><span>開始 ${esc(fmtTime(j.started_at))}</span><span>終了 ${esc(fmtTime(j.ended_at))}</span></div></div>
+      <div><span class="status ${esc(state)}">${esc(label)}</span><div class="mono muted">${esc((j.id||'').slice(0,12))}</div></div>
+      <div><div><strong>${esc(j.queue||'-')}</strong> <span class="muted">${esc((j.task&&j.task.name)||'')}</span></div><div class="preview">${esc(j.input_preview || j.description || '')}</div>${resource?`<div class="resource-line mono">${esc(resource)}</div>`:''}${note}<div class="time-line"><span>作成 ${esc(fmtTime(j.created_at))}</span><span>開始 ${esc(fmtTime(j.started_at))}</span><span>終了 ${esc(fmtTime(j.ended_at))}</span></div></div>
       <div class="actions"><button class="btn" onclick="showJob('${esc(j.id)}')">詳細</button></div>
     </div>`;
   }).join('') || '<div class="muted">未完了ワークはありません</div>';
