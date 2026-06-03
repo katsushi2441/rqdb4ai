@@ -135,11 +135,131 @@ def job_preview(job: Any) -> dict[str, Any]:
     }
 
 
+def job_lifecycle(job: Any, rq_status: str) -> dict[str, Any]:
+    """Describe what the RQ job result actually means.
+
+    RQ's "finished" only means the Python callable returned. It does not always
+    mean the external/business task is complete.
+    """
+    result = getattr(job, "result", None)
+    if rq_status == "failed":
+        return {
+            "state": "failed",
+            "label": "失敗",
+            "scope": "rq_job",
+            "terminal": True,
+            "rq_status": rq_status,
+            "items": 0,
+            "note": "RQジョブが失敗しました",
+        }
+    if rq_status == "started":
+        return {
+            "state": "running",
+            "label": "実行中",
+            "scope": "rq_job",
+            "terminal": False,
+            "rq_status": rq_status,
+            "items": 0,
+            "note": "RQジョブを実行中です",
+        }
+    if rq_status in ("queued", "scheduled", "deferred"):
+        return {
+            "state": rq_status,
+            "label": {"queued": "待機", "scheduled": "予定", "deferred": "保留"}.get(rq_status, rq_status),
+            "scope": "rq_job",
+            "terminal": False,
+            "rq_status": rq_status,
+            "items": 0,
+            "note": "RQジョブはまだ完了していません",
+        }
+    if rq_status in ("stopped", "canceled"):
+        return {
+            "state": rq_status,
+            "label": {"stopped": "停止", "canceled": "取消"}.get(rq_status, rq_status),
+            "scope": "rq_job",
+            "terminal": True,
+            "rq_status": rq_status,
+            "items": 0,
+            "note": "RQジョブは完了していません",
+        }
+
+    if rq_status == "finished" and isinstance(result, dict):
+        scope = str(result.get("completion_scope") or result.get("scope") or "").strip().lower()
+        status = str(result.get("status") or "").strip().lower()
+        trigger_started = bool(result.get("trigger_started"))
+        items = result.get("items", 0)
+        note = safe_text(result.get("note"), 500)
+        if scope == "trigger" or trigger_started:
+            return {
+                "state": "triggered",
+                "label": "起動済み",
+                "scope": "external_trigger",
+                "terminal": False,
+                "rq_status": rq_status,
+                "items": int(items or 0) if isinstance(items, (int, float, str)) and str(items).isdigit() else 0,
+                "note": note or "外部処理を起動しました。外部処理の完了ではありません",
+            }
+        if status in {"warn", "warning"}:
+            return {
+                "state": "warning",
+                "label": "警告",
+                "scope": "business_result",
+                "terminal": True,
+                "rq_status": rq_status,
+                "items": int(items or 0) if isinstance(items, (int, float, str)) and str(items).isdigit() else 0,
+                "note": note,
+            }
+        if status in {"failed", "error", "down"}:
+            return {
+                "state": "failed",
+                "label": "失敗",
+                "scope": "business_result",
+                "terminal": True,
+                "rq_status": rq_status,
+                "items": int(items or 0) if isinstance(items, (int, float, str)) and str(items).isdigit() else 0,
+                "note": note,
+            }
+        return {
+            "state": "complete",
+            "label": "完了",
+            "scope": "business_result",
+            "terminal": True,
+            "rq_status": rq_status,
+            "items": int(items or 0) if isinstance(items, (int, float, str)) and str(items).isdigit() else 0,
+            "note": note,
+        }
+
+    if rq_status == "finished":
+        return {
+            "state": "complete",
+            "label": "完了",
+            "scope": "rq_job",
+            "terminal": True,
+            "rq_status": rq_status,
+            "items": 0,
+            "note": "RQジョブが完了しました",
+        }
+
+    return {
+        "state": rq_status,
+        "label": rq_status,
+        "scope": "rq_job",
+        "terminal": False,
+        "rq_status": rq_status,
+        "items": 0,
+        "note": "",
+    }
+
+
 def serialize_job(job: Any, detail: bool = False) -> dict[str, Any]:
+    status = job_status(job)
+    lifecycle = job_lifecycle(job, status)
     data = {
         "id": job.id,
         "queue": getattr(job, "origin", None),
-        "status": job_status(job),
+        "status": status,
+        "status_label": lifecycle["label"],
+        "lifecycle": lifecycle,
         "task": task_from_job(job),
         "created_at": iso(getattr(job, "created_at", None)),
         "enqueued_at": iso(getattr(job, "enqueued_at", None)),
@@ -153,7 +273,6 @@ def serialize_job(job: Any, detail: bool = False) -> dict[str, Any]:
         "description": safe_text(getattr(job, "description", None), 500),
         "actions": ["detail"],
     }
-    status = data["status"]
     if status in ("failed", "finished", "deferred", "queued", "scheduled", "canceled", "stopped"):
         data["actions"].append("delete")
     if status == "failed":

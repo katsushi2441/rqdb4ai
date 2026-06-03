@@ -78,6 +78,43 @@ They show:
 
 The job list and history queue counts must use the same RQ registries.
 
+### Job Lifecycle
+
+RQDB4AI must distinguish RQ internal state from business outcome.
+
+`status` is the RQ internal state:
+
+- `queued`
+- `started`
+- `finished`
+- `failed`
+- `stopped`
+- `canceled`
+- `deferred`
+- `scheduled`
+
+`lifecycle` is the user-facing meaning:
+
+- `running`: the RQ callable is running
+- `triggered`: the RQ callable started an external process, but that external process is not complete
+- `complete`: the business task itself is complete
+- `failed`: the RQ job or business task failed
+- `warning`: the business task completed with warnings
+
+If a job only triggers an external worker, the job result must set:
+
+```json
+{
+  "completion_scope": "trigger",
+  "trigger_started": true,
+  "business_terminal": false
+}
+```
+
+In that case, the dashboard must show `起動済み`, not `完了`.
+
+`finished` must never be displayed as business completion unless the returned result represents the business result itself.
+
 ## Routing
 
 `auto` is an enqueue-time routing directive only.
@@ -95,5 +132,6 @@ It must be resolved before enqueueing:
 - Do not hide queues to make the UI look clean.
 - Do not merge live queue counts and completed history counts.
 - Do not treat enqueue success as external task success.
+- Do not treat RQ `finished` as business completion for trigger-only jobs.
 - Do not put application-specific job modules in this repository.
 - Do not put application-specific names in RQDB4AI documents or code unless they are user-provided runtime metadata from Redis/RQ.

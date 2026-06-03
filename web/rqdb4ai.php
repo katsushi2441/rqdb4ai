@@ -120,7 +120,7 @@ if (isset($_GET['proxy'])) {
 <title><?php echo h(RQDB4AI_UI_TITLE); ?></title>
 <style>
 :root{--bg:#f6f7fb;--panel:#fff;--text:#162033;--muted:#64748b;--line:#e5e7eb;--accent:#2563eb;--ok:#059669;--warn:#d97706;--bad:#dc2626;--run:#7c3aed;--stop:#475569}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55}.wrap{max-width:1180px;margin:0 auto;padding:18px}.top{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px}.brand h1{font-size:22px;margin:0}.brand p{margin:2px 0 0;color:var(--muted);font-size:13px}.btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:9px 12px;color:var(--text);font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.btn.danger{color:var(--bad)}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;box-shadow:0 1px 2px rgba(15,23,42,.04)}.metric{font-size:24px;font-weight:800}.label{font-size:12px;color:var(--muted)}.section{margin-top:14px}.queue-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}.queue-name{font-weight:800;margin-bottom:8px}.chips{display:flex;flex-wrap:wrap;gap:6px}.chip{border-radius:999px;background:#f1f5f9;color:#334155;padding:4px 8px;font-size:12px}.chip.bad{background:#fee2e2;color:#991b1b}.chip.run{background:#ede9fe;color:#5b21b6}.chip.resource{background:#dbeafe;color:#1e40af}.tabs{display:flex;gap:8px;overflow:auto;padding:2px 0 10px}.tab{white-space:nowrap}.tab.active{background:#111827;color:#fff}.jobs{display:grid;gap:10px}.job{display:grid;grid-template-columns:120px 1fr auto;gap:12px;align-items:center}.status{font-weight:800}.status.failed{color:var(--bad)}.status.started{color:var(--run)}.status.finished{color:var(--ok)}.status.queued{color:var(--warn)}.status.stopped{color:var(--stop)}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.muted{color:var(--muted)}.preview{font-size:13px;color:#334155;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.resource-line{margin-top:3px;font-size:12px;color:#1e40af;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.time-line{margin-top:3px;font-size:12px;color:#64748b;display:flex;gap:8px;flex-wrap:wrap}.actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.modal{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:flex-end;z-index:20}.modal.open{display:flex}.sheet{background:#fff;width:100%;max-height:88vh;overflow:auto;border-radius:16px 16px 0 0;padding:16px}.sheet-inner{max-width:1000px;margin:0 auto}.pre{background:#0f172a;color:#e5e7eb;border-radius:8px;padding:12px;white-space:pre-wrap;word-break:break-word;font-size:12px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:10px}.select{border:1px solid var(--line);border-radius:8px;background:#fff;padding:9px 10px}.err{background:#fff1f2;border:1px solid #fecdd3;color:#9f1239;border-radius:8px;padding:10px;margin-bottom:10px;display:none}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55}.wrap{max-width:1180px;margin:0 auto;padding:18px}.top{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px}.brand h1{font-size:22px;margin:0}.brand p{margin:2px 0 0;color:var(--muted);font-size:13px}.btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:9px 12px;color:var(--text);font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.btn.danger{color:var(--bad)}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;box-shadow:0 1px 2px rgba(15,23,42,.04)}.metric{font-size:24px;font-weight:800}.label{font-size:12px;color:var(--muted)}.section{margin-top:14px}.queue-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}.queue-name{font-weight:800;margin-bottom:8px}.chips{display:flex;flex-wrap:wrap;gap:6px}.chip{border-radius:999px;background:#f1f5f9;color:#334155;padding:4px 8px;font-size:12px}.chip.bad{background:#fee2e2;color:#991b1b}.chip.run{background:#ede9fe;color:#5b21b6}.chip.resource{background:#dbeafe;color:#1e40af}.tabs{display:flex;gap:8px;overflow:auto;padding:2px 0 10px}.tab{white-space:nowrap}.tab.active{background:#111827;color:#fff}.jobs{display:grid;gap:10px}.job{display:grid;grid-template-columns:120px 1fr auto;gap:12px;align-items:center}.status{font-weight:800}.status.failed{color:var(--bad)}.status.started,.status.running{color:var(--run)}.status.finished,.status.complete{color:var(--ok)}.status.queued,.status.triggered,.status.warning{color:var(--warn)}.status.stopped,.status.canceled{color:var(--stop)}.mini{font-size:11px}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.muted{color:var(--muted)}.preview{font-size:13px;color:#334155;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.resource-line{margin-top:3px;font-size:12px;color:#1e40af;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.time-line{margin-top:3px;font-size:12px;color:#64748b;display:flex;gap:8px;flex-wrap:wrap}.actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.modal{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:flex-end;z-index:20}.modal.open{display:flex}.sheet{background:#fff;width:100%;max-height:88vh;overflow:auto;border-radius:16px 16px 0 0;padding:16px}.sheet-inner{max-width:1000px;margin:0 auto}.pre{background:#0f172a;color:#e5e7eb;border-radius:8px;padding:12px;white-space:pre-wrap;word-break:break-word;font-size:12px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:10px}.select{border:1px solid var(--line);border-radius:8px;background:#fff;padding:9px 10px}.err{background:#fff1f2;border:1px solid #fecdd3;color:#9f1239;border-radius:8px;padding:10px;margin-bottom:10px;display:none}
 @media(max-width:760px){.wrap{padding:12px}.top{align-items:flex-start}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.job{grid-template-columns:1fr}.actions{justify-content:flex-start}.brand h1{font-size:18px}.card{padding:12px}.sheet{max-height:92vh}.preview{white-space:normal}}
 </style>
 </head>
@@ -184,7 +184,7 @@ if (isset($_GET['proxy'])) {
 
 <script>
 const statuses = [
-  ['all','すべて'], ['queued','待機'], ['started','実行中'], ['failed','失敗'], ['stopped','停止'], ['finished','完了'], ['deferred','保留'], ['scheduled','予定'], ['canceled','取消']
+  ['all','すべて'], ['queued','待機'], ['started','実行中'], ['failed','失敗'], ['stopped','停止'], ['finished','RQ完了'], ['deferred','保留'], ['scheduled','予定'], ['canceled','取消']
 ];
 let currentStatus = 'all';
 let lastQueues = [];
@@ -247,7 +247,7 @@ async function loadSummary(){
       <div class="chips">
         <span class="chip">待機 ${q.queued||0}</span>
         <span class="chip run">実行 ${q.started||0}</span>
-        <span class="chip">完了 ${q.finished||0}</span>
+        <span class="chip">RQ完了 ${q.finished||0}</span>
         <span class="chip bad">失敗 ${q.failed||0}</span>
         <span class="chip">停止 ${q.stopped||0}</span>
         <span class="chip">取消 ${q.canceled||0}</span>
@@ -271,13 +271,17 @@ async function loadJobs(){
   const data = await api('jobs', params);
   document.getElementById('jobs').innerHTML = (data.jobs||[]).map(j => {
     const st = j.status || 'unknown';
+    const lifecycle = j.lifecycle || {};
+    const displayLabel = j.status_label || lifecycle.label || statusLabel(st);
+    const displayState = lifecycle.state || st;
     const err = j.error && j.error.label ? ` / ${j.error.label}` : '';
     const resource = resourceLabel(j);
     const task = j.task || {};
     const source = [task.source, task.queue_class, task.priority_class].filter(Boolean).join(' / ');
+    const lifecycleNote = lifecycle.note ? `<div class="resource-line">${esc(lifecycle.note)}</div>` : '';
     return `<div class="job">
-      <div><span class="status ${esc(st)}">${esc(statusLabel(st))}</span><div class="mono muted">${esc((j.id||'').slice(0,12))}</div></div>
-      <div><div><strong>${esc(j.queue||'-')}</strong> <span class="muted">${esc((j.task&&j.task.name)||'')}</span></div><div class="preview">${esc(j.input_preview || j.description || '')}${esc(err)}</div>${resource?`<div class="resource-line mono">${esc(resource)}</div>`:''}<div class="time-line"><span>作成 ${esc(fmtTime(j.created_at))}</span><span>投入 ${esc(fmtTime(j.enqueued_at))}</span><span>開始 ${esc(fmtTime(j.started_at))}</span><span>終了 ${esc(fmtTime(j.ended_at))}</span>${source?`<span>${esc(source)}</span>`:''}</div></div>
+      <div><span class="status ${esc(displayState)}">${esc(displayLabel)}</span><div class="mono muted">${esc((j.id||'').slice(0,12))}</div><div class="muted mini">RQ: ${esc(statusLabel(st))}</div></div>
+      <div><div><strong>${esc(j.queue||'-')}</strong> <span class="muted">${esc((j.task&&j.task.name)||'')}</span></div><div class="preview">${esc(j.input_preview || j.description || '')}${esc(err)}</div>${resource?`<div class="resource-line mono">${esc(resource)}</div>`:''}${lifecycleNote}<div class="time-line"><span>作成 ${esc(fmtTime(j.created_at))}</span><span>投入 ${esc(fmtTime(j.enqueued_at))}</span><span>開始 ${esc(fmtTime(j.started_at))}</span><span>終了 ${esc(fmtTime(j.ended_at))}</span>${source?`<span>${esc(source)}</span>`:''}</div></div>
       <div class="actions">
         <button class="btn" onclick="showJob('${esc(j.id)}')">詳細</button>
         ${st==='failed'?`<button class="btn" onclick="requeueJob('${esc(j.id)}')">再実行</button>`:''}
@@ -291,7 +295,8 @@ async function showJob(id){
   const j = data.job;
   document.getElementById('modalTitle').textContent = 'Job: ' + id;
   document.getElementById('modalBody').innerHTML = `
-    <p><strong>${esc(statusLabel(j.status))}</strong> / ${esc(j.queue)} / ${esc((j.task&&j.task.name)||'')}</p>
+    <p><strong>${esc(j.status_label || (j.lifecycle&&j.lifecycle.label) || statusLabel(j.status))}</strong> / RQ: ${esc(statusLabel(j.status))} / ${esc(j.queue)} / ${esc((j.task&&j.task.name)||'')}</p>
+    <h3>Lifecycle</h3><div class="pre">${esc(JSON.stringify(j.lifecycle || {}, null, 2))}</div>
     ${resourceLabel(j)?`<p><span class="chip resource mono">${esc(resourceLabel(j))}</span></p>`:''}
     <p class="muted">作成: ${esc(fmtTime(j.created_at))} / 投入: ${esc(fmtTime(j.enqueued_at))} / 開始: ${esc(fmtTime(j.started_at))} / 終了: ${esc(fmtTime(j.ended_at))}</p>
     <h3>Input</h3><div class="pre">${esc(JSON.stringify(j.args, null, 2))}</div>
