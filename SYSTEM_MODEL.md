@@ -62,6 +62,24 @@ They show:
 
 Worker state is not job result state.
 
+### Work Items
+
+`work_items` are unfinished work from the dashboard point of view.
+
+They are not queues.
+
+They include:
+
+- RQ jobs whose internal status is `queued`, `started`, `deferred`, or `scheduled`
+- RQ jobs that already returned but only triggered an external process, where `lifecycle.terminal` is `false`
+
+Therefore this state is valid and must be displayed honestly:
+
+- RQ execution queue counts are `0`
+- `work_items` is greater than `0`
+
+It means RQ has no local callable waiting or running, but an externally triggered process still has not reported a terminal result.
+
 ### Jobs
 
 `jobs` are individual RQ jobs.
@@ -131,6 +149,7 @@ It must be resolved before enqueueing:
 
 - Do not hide queues to make the UI look clean.
 - Do not merge live queue counts and completed history counts.
+- Do not present `work_items` as queue backlog.
 - Do not treat enqueue success as external task success.
 - Do not treat RQ `finished` as business completion for trigger-only jobs.
 - Do not put application-specific job modules in this repository.

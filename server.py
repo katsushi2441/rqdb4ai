@@ -17,6 +17,7 @@ from rq_client import (
     history_queue_summaries,
     history_totals,
     list_jobs,
+    list_work_items,
     list_workers,
     queue_names,
     redis_url,
@@ -151,6 +152,7 @@ def summary(identity: TokenIdentity = Depends(require_identity)) -> dict[str, An
     try:
         execution_queues = all_queue_summaries()
         history_queues = history_queue_summaries()
+        work_items = list_work_items()
         workers = list_workers()
     except Exception as exc:
         return redis_error_payload(exc)
@@ -158,7 +160,10 @@ def summary(identity: TokenIdentity = Depends(require_identity)) -> dict[str, An
     live_stopped = sum(q.get("stopped", 0) for q in execution_queues)
     live_started = sum(q.get("started", 0) for q in execution_queues)
     live_queued = sum(q.get("queued", 0) for q in execution_queues)
+    live_deferred = sum(q.get("deferred", 0) for q in execution_queues)
+    live_scheduled = sum(q.get("scheduled", 0) for q in execution_queues)
     totals = history_totals(history_queues)
+    external_unconfirmed = sum(1 for item in work_items if item.get("work_scope") == "external_unconfirmed")
     suggestions = []
     if totals["failed"]:
         suggestions.append({"action": "inspect_failed", "count": totals["failed"], "risk": "low"})
@@ -168,7 +173,8 @@ def summary(identity: TokenIdentity = Depends(require_identity)) -> dict[str, An
         suggestions.append({"action": "start_worker", "count": live_queued, "risk": "medium"})
     text = (
         f"{len(execution_queues)} execution queues, {len(history_queues)} history queues, "
-        f"{len(workers)} workers, {live_queued} queued, {live_started} running, "
+        f"{len(workers)} workers, {len(work_items)} unfinished work items, "
+        f"{live_queued} queued, {live_started} running, "
         f"{totals['finished']} finished, {totals['failed']} failed, {totals['stopped']} stopped."
     )
     return {
@@ -177,12 +183,20 @@ def summary(identity: TokenIdentity = Depends(require_identity)) -> dict[str, An
         "queues": execution_queues,
         "execution_queues": execution_queues,
         "history_queues": history_queues,
+        "work_items": work_items,
         "totals": {
             "live": {
                 "queued": live_queued,
                 "started": live_started,
+                "deferred": live_deferred,
+                "scheduled": live_scheduled,
                 "failed": live_failed,
                 "stopped": live_stopped,
+            },
+            "work": {
+                "active": len(work_items),
+                "rq_live": live_queued + live_started + live_deferred + live_scheduled,
+                "external_unconfirmed": external_unconfirmed,
             },
             "history": totals,
         },

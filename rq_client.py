@@ -201,6 +201,27 @@ def list_jobs(queue_name: str | None, status: str | None, limit: int, offset: in
     return {"jobs": jobs[: max(1, min(limit, MAX_LIMIT))], "limit": limit, "offset": offset}
 
 
+def list_work_items(limit: int = DEFAULT_LIMIT) -> list[dict[str, Any]]:
+    """Return unfinished work, not just Redis queue backlog.
+
+    RQ queue counts only cover jobs still waiting/running inside RQ. A job may
+    finish after it triggers an external process; that external work is still
+    unfinished from the dashboard's point of view.
+    """
+    live_statuses = {"queued", "started", "deferred", "scheduled"}
+    jobs = list_jobs(None, "all", max(1, min(limit, MAX_LIMIT)), 0).get("jobs", [])
+    work_items: list[dict[str, Any]] = []
+    for item in jobs:
+        lifecycle = item.get("lifecycle") or {}
+        rq_status = str(item.get("status") or "")
+        is_rq_live = rq_status in live_statuses
+        is_external_open = lifecycle.get("terminal") is False
+        if is_rq_live or is_external_open:
+            item["work_scope"] = "rq_live" if is_rq_live else "external_unconfirmed"
+            work_items.append(item)
+    return work_items[: max(1, min(limit, MAX_LIMIT))]
+
+
 def fetch_job(job_id: str) -> Job:
     return Job.fetch(job_id, connection=connection())
 

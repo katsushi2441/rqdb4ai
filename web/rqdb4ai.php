@@ -120,7 +120,7 @@ if (isset($_GET['proxy'])) {
 <title><?php echo h(RQDB4AI_UI_TITLE); ?></title>
 <style>
 :root{--bg:#f6f7fb;--panel:#fff;--text:#162033;--muted:#64748b;--line:#e5e7eb;--accent:#2563eb;--ok:#059669;--warn:#d97706;--bad:#dc2626;--run:#7c3aed;--stop:#475569}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55}.wrap{max-width:1180px;margin:0 auto;padding:18px}.top{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px}.brand h1{font-size:22px;margin:0}.brand p{margin:2px 0 0;color:var(--muted);font-size:13px}.btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:9px 12px;color:var(--text);font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.btn.danger{color:var(--bad)}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;box-shadow:0 1px 2px rgba(15,23,42,.04)}.metric{font-size:24px;font-weight:800}.label{font-size:12px;color:var(--muted)}.section{margin-top:14px}.queue-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}.queue-name{font-weight:800;margin-bottom:8px}.chips{display:flex;flex-wrap:wrap;gap:6px}.chip{border-radius:999px;background:#f1f5f9;color:#334155;padding:4px 8px;font-size:12px}.chip.bad{background:#fee2e2;color:#991b1b}.chip.run{background:#ede9fe;color:#5b21b6}.chip.resource{background:#dbeafe;color:#1e40af}.tabs{display:flex;gap:8px;overflow:auto;padding:2px 0 10px}.tab{white-space:nowrap}.tab.active{background:#111827;color:#fff}.jobs{display:grid;gap:10px}.job{display:grid;grid-template-columns:120px 1fr auto;gap:12px;align-items:center}.status{font-weight:800}.status.failed{color:var(--bad)}.status.started,.status.running{color:var(--run)}.status.finished,.status.complete{color:var(--ok)}.status.queued,.status.triggered,.status.warning{color:var(--warn)}.status.stopped,.status.canceled{color:var(--stop)}.mini{font-size:11px}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.muted{color:var(--muted)}.preview{font-size:13px;color:#334155;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.resource-line{margin-top:3px;font-size:12px;color:#1e40af;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.time-line{margin-top:3px;font-size:12px;color:#64748b;display:flex;gap:8px;flex-wrap:wrap}.actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.modal{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:flex-end;z-index:20}.modal.open{display:flex}.sheet{background:#fff;width:100%;max-height:88vh;overflow:auto;border-radius:16px 16px 0 0;padding:16px}.sheet-inner{max-width:1000px;margin:0 auto}.pre{background:#0f172a;color:#e5e7eb;border-radius:8px;padding:12px;white-space:pre-wrap;word-break:break-word;font-size:12px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:10px}.select{border:1px solid var(--line);border-radius:8px;background:#fff;padding:9px 10px}.err{background:#fff1f2;border:1px solid #fecdd3;color:#9f1239;border-radius:8px;padding:10px;margin-bottom:10px;display:none}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55}.wrap{max-width:1180px;margin:0 auto;padding:18px}.top{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px}.brand h1{font-size:22px;margin:0}.brand p{margin:2px 0 0;color:var(--muted);font-size:13px}.btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:9px 12px;color:var(--text);font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.btn.danger{color:var(--bad)}.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;box-shadow:0 1px 2px rgba(15,23,42,.04)}.metric{font-size:24px;font-weight:800}.label{font-size:12px;color:var(--muted)}.section{margin-top:14px}.queue-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}.queue-name{font-weight:800;margin-bottom:8px}.chips{display:flex;flex-wrap:wrap;gap:6px}.chip{border-radius:999px;background:#f1f5f9;color:#334155;padding:4px 8px;font-size:12px}.chip.bad{background:#fee2e2;color:#991b1b}.chip.run{background:#ede9fe;color:#5b21b6}.chip.resource{background:#dbeafe;color:#1e40af}.tabs{display:flex;gap:8px;overflow:auto;padding:2px 0 10px}.tab{white-space:nowrap}.tab.active{background:#111827;color:#fff}.jobs{display:grid;gap:10px}.job{display:grid;grid-template-columns:120px 1fr auto;gap:12px;align-items:center}.status{font-weight:800}.status.failed{color:var(--bad)}.status.started,.status.running{color:var(--run)}.status.finished,.status.complete{color:var(--ok)}.status.queued,.status.triggered,.status.warning{color:var(--warn)}.status.stopped,.status.canceled{color:var(--stop)}.mini{font-size:11px}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.muted{color:var(--muted)}.preview{font-size:13px;color:#334155;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.resource-line{margin-top:3px;font-size:12px;color:#1e40af;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.time-line{margin-top:3px;font-size:12px;color:#64748b;display:flex;gap:8px;flex-wrap:wrap}.actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.modal{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:flex-end;z-index:20}.modal.open{display:flex}.sheet{background:#fff;width:100%;max-height:88vh;overflow:auto;border-radius:16px 16px 0 0;padding:16px}.sheet-inner{max-width:1000px;margin:0 auto}.pre{background:#0f172a;color:#e5e7eb;border-radius:8px;padding:12px;white-space:pre-wrap;word-break:break-word;font-size:12px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:10px}.select{border:1px solid var(--line);border-radius:8px;background:#fff;padding:9px 10px}.err{background:#fff1f2;border:1px solid #fecdd3;color:#9f1239;border-radius:8px;padding:10px;margin-bottom:10px;display:none}
 @media(max-width:760px){.wrap{padding:12px}.top{align-items:flex-start}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.job{grid-template-columns:1fr}.actions{justify-content:flex-start}.brand h1{font-size:18px}.card{padding:12px}.sheet{max-height:92vh}.preview{white-space:normal}}
 </style>
 </head>
@@ -135,22 +135,30 @@ if (isset($_GET['proxy'])) {
   </div>
   <div id="error" class="err"></div>
   <div class="grid">
-    <div class="card"><div id="mQueues" class="metric">-</div><div class="label">実行キュー</div></div>
-    <div class="card"><div id="mWorkers" class="metric">-</div><div class="label">実行プロセス</div></div>
-    <div class="card"><div id="mLive" class="metric">-</div><div class="label">現在 待機/実行</div></div>
-    <div class="card"><div id="mHistory" class="metric">-</div><div class="label">履歴 完了/失敗</div></div>
+    <div class="card"><div id="mWork" class="metric">-</div><div class="label">未完了ワーク</div></div>
+    <div class="card"><div id="mQueues" class="metric">-</div><div class="label">RQ実行キュー</div></div>
+    <div class="card"><div id="mWorkers" class="metric">-</div><div class="label">RQ Worker</div></div>
+    <div class="card"><div id="mLive" class="metric">-</div><div class="label">RQ 待機/実行</div></div>
+    <div class="card"><div id="mHistory" class="metric">-</div><div class="label">履歴 RQ完了/失敗</div></div>
   </div>
 
   <div class="section card">
     <div class="toolbar">
-      <strong>実行キュー</strong><span class="muted">Redis/RQで現在処理対象になっているキュー</span>
+      <strong>未完了ワーク</strong><span class="muted">RQ実行中、または外部処理の完了確認が残っている仕事</span>
+    </div>
+    <div id="workItems" class="jobs"></div>
+  </div>
+
+  <div class="section card">
+    <div class="toolbar">
+      <strong>RQ実行キュー</strong><span class="muted">Redis/RQで現在処理対象になっているキュー。外部処理の完了状態ではありません</span>
     </div>
     <div id="queues" class="queue-grid"></div>
   </div>
 
   <div class="section card">
     <div class="toolbar">
-      <strong>ジョブ履歴キュー</strong><span class="muted">完了・失敗を含むRQ履歴の母集団</span>
+      <strong>RQジョブ履歴キュー</strong><span class="muted">完了・失敗を含むRQ履歴の母集団</span>
     </div>
     <div id="historyQueues" class="queue-grid"></div>
   </div>
@@ -165,7 +173,7 @@ if (isset($_GET['proxy'])) {
   </div>
 
   <div class="section card">
-    <div class="toolbar"><strong>実行プロセス</strong><span class="muted">RQ Worker。キューを監視してジョブを処理する常駐プロセス</span></div>
+    <div class="toolbar"><strong>RQ Worker</strong><span class="muted">キューを監視してRQジョブを処理する常駐プロセス</span></div>
     <div id="workers" class="jobs"></div>
   </div>
 </div>
@@ -220,9 +228,12 @@ async function loadSummary(){
   const qs = data.execution_queues || data.queues || [];
   const hqs = data.history_queues || [];
   const ws = data.workers || [];
+  const workItems = data.work_items || [];
   lastQueues = qs;
   const live = (data.totals && data.totals.live) || {};
+  const work = (data.totals && data.totals.work) || {};
   const history = (data.totals && data.totals.history) || {};
+  document.getElementById('mWork').textContent = work.active == null ? workItems.length : work.active;
   document.getElementById('mQueues').textContent = qs.length;
   document.getElementById('mWorkers').textContent = ws.length;
   document.getElementById('mLive').textContent = `${live.queued||0}/${live.started||0}`;
@@ -231,6 +242,7 @@ async function loadSummary(){
   const cur = select.value;
   select.innerHTML = '<option value="">全履歴キュー</option>' + hqs.map(q=>`<option value="${esc(q.name)}">${esc(q.name)}</option>`).join('');
   select.value = cur;
+  renderWorkItems(workItems);
   document.getElementById('queues').innerHTML = qs.map(q => `
     <div class="card">
       <div class="queue-name mono">${esc(q.name)}</div>
@@ -254,6 +266,22 @@ async function loadSummary(){
       </div>
     </div>`).join('') || '<div class="muted">ジョブ履歴がありません</div>';
   renderWorkers(ws);
+}
+function renderWorkItems(items){
+  document.getElementById('workItems').innerHTML = (items||[]).map(j => {
+    const st = j.status || 'unknown';
+    const lifecycle = j.lifecycle || {};
+    const label = j.status_label || lifecycle.label || statusLabel(st);
+    const state = lifecycle.state || st;
+    const scope = j.work_scope === 'external_unconfirmed' ? '外部未確認' : 'RQ未完了';
+    const resource = resourceLabel(j);
+    const note = lifecycle.note ? `<div class="resource-line">${esc(lifecycle.note)}</div>` : '';
+    return `<div class="job">
+      <div><span class="status ${esc(state)}">${esc(label)}</span><div class="mono muted">${esc((j.id||'').slice(0,12))}</div><div class="muted mini">${esc(scope)}</div></div>
+      <div><div><strong>${esc(j.queue||'-')}</strong> <span class="muted">${esc((j.task&&j.task.name)||'')}</span></div><div class="preview">${esc(j.input_preview || j.description || '')}</div>${resource?`<div class="resource-line mono">${esc(resource)}</div>`:''}${note}<div class="time-line"><span>RQ: ${esc(statusLabel(st))}</span><span>作成 ${esc(fmtTime(j.created_at))}</span><span>開始 ${esc(fmtTime(j.started_at))}</span><span>終了 ${esc(fmtTime(j.ended_at))}</span></div></div>
+      <div class="actions"><button class="btn" onclick="showJob('${esc(j.id)}')">詳細</button></div>
+    </div>`;
+  }).join('') || '<div class="muted">未完了ワークはありません</div>';
 }
 function renderWorkers(ws){
   document.getElementById('workers').innerHTML = (ws||[]).map(w => `
