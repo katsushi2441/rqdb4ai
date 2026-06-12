@@ -47,6 +47,20 @@ def safe_json_value(value: Any, limit: int = MAX_FULL_TEXT) -> Any:
     return safe_text(value, limit)
 
 
+def error_summary(exc_info: str | None) -> str | None:
+    if not exc_info:
+        return None
+    lines = [line.strip() for line in exc_info.splitlines() if line.strip()]
+    if not lines:
+        return None
+    for line in reversed(lines):
+        if line.startswith(("File ", "Traceback ")):
+            continue
+        if ":" in line:
+            return safe_text(line, 500)
+    return safe_text(lines[-1], 500)
+
+
 def job_status(job: Any) -> str:
     try:
         status = job.get_status(refresh=False)
@@ -57,7 +71,7 @@ def job_status(job: Any) -> str:
 
 def classify_error(exc_info: str | None) -> dict[str, str | None]:
     if not exc_info:
-        return {"type": None, "label": None, "message": None}
+        return {"type": None, "label": None, "message": None, "summary": None}
     text = exc_info.lower()
     if "timeout" in text or "timed out" in text:
         kind, label = "timeout", "タイムアウト"
@@ -71,7 +85,8 @@ def classify_error(exc_info: str | None) -> dict[str, str | None]:
         kind, label = "ollama_error", "Ollamaエラー"
     else:
         kind, label = "error", "エラー"
-    return {"type": kind, "label": label, "message": safe_text(exc_info, 500)}
+    summary = error_summary(exc_info)
+    return {"type": kind, "label": label, "message": summary or safe_text(exc_info, 500), "summary": summary}
 
 
 def task_from_job(job: Any) -> dict[str, Any]:
@@ -114,11 +129,11 @@ def task_from_job(job: Any) -> dict[str, Any]:
     }
 
 
-def job_preview(job: Any) -> dict[str, Any]:
+def job_preview(job: Any, rq_status: str | None = None) -> dict[str, Any]:
     args = getattr(job, "args", ()) or ()
     kwargs = getattr(job, "kwargs", {}) or {}
     result = getattr(job, "result", None)
-    exc_info = getattr(job, "exc_info", None)
+    exc_info = getattr(job, "exc_info", None) if rq_status in {"failed", "stopped", "canceled"} else None
 
     prompt = None
     for key in ("prompt", "input", "text", "url"):
@@ -278,7 +293,7 @@ def serialize_job(job: Any, detail: bool = False) -> dict[str, Any]:
         data["actions"].append("delete")
     if status == "failed":
         data["actions"].append("requeue")
-    data.update(job_preview(job))
+    data.update(job_preview(job, status))
     if detail:
         data["args"] = safe_json_value(getattr(job, "args", ()))
         data["kwargs"] = safe_json_value(getattr(job, "kwargs", {}))

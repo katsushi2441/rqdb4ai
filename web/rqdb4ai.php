@@ -311,7 +311,7 @@ async function loadJobs(){
     const lifecycle = j.lifecycle || {};
     const displayLabel = j.status_label || lifecycle.label || statusLabel(st);
     const displayState = lifecycle.state || st;
-    const err = j.error && j.error.label ? ` / ${j.error.label}` : '';
+    const err = j.error && j.error.message ? ` / ${j.error.label || 'エラー'}: ${j.error.message}` : (j.error && j.error.label ? ` / ${j.error.label}` : '');
     const resource = resourceLabel(j);
     const task = j.task || {};
     const source = [task.source, task.queue_class, task.priority_class].filter(Boolean).join(' / ');
