@@ -1,19 +1,18 @@
 [Unit]
-Description=Kurage RQ Dashboard for AI API
+Description=RQDB4AI API
 After=redis-server.service
 Requires=redis-server.service
 
 [Service]
 Type=simple
-User=kojima
-WorkingDirectory=/home/kojima/work/rqdb4ai
+WorkingDirectory=%h/work/rqdb4ai
 Environment=PYTHONUNBUFFERED=1
-EnvironmentFile=-/home/kojima/work/rqdb4ai/rqdb4ai.env
+EnvironmentFile=-%h/work/rqdb4ai/rqdb4ai.env
 ExecStart=/usr/bin/python3 -m uvicorn server:app --host 127.0.0.1 --port 18300
 Restart=always
 RestartSec=5
-StandardOutput=append:/home/kojima/rqdb4ai.log
-StandardError=append:/home/kojima/rqdb4ai.log
+StandardOutput=append:%h/rqdb4ai.log
+StandardError=append:%h/rqdb4ai.log
 
 [Install]
 WantedBy=multi-user.target

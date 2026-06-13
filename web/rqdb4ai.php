@@ -19,7 +19,7 @@ function rqdb_api($method, $path, $payload = null) {
         'Authorization: Bearer ' . RQDB4AI_API_TOKEN,
         'Accept: application/json',
         'Content-Type: application/json',
-        'User-Agent: KurageRQDashboard/0.1',
+        'User-Agent: RQDB4AI/0.1',
     );
     $body = $payload === null ? null : json_encode($payload);
 
@@ -128,7 +128,7 @@ if (isset($_GET['proxy'])) {
 <div class="wrap">
   <div class="top">
     <div class="brand">
-      <h1>Kurage RQ Dashboard for AI</h1>
+      <h1><?php echo h(RQDB4AI_UI_TITLE); ?></h1>
       <p>RQ/Redis ジョブを日本語UIとAI APIで管理</p>
     </div>
     <button class="btn primary" onclick="reloadAll()">更新</button>

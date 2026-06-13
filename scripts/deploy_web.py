@@ -9,9 +9,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 WEB_DIR = ROOT / "web"
 
-FTP_HOST = os.environ.get("RQDB4AI_FTP_HOST", "ftp-exbridge.heteml.net")
-FTP_USER = os.environ.get("RQDB4AI_FTP_USER", "exbridge")
-FTP_PASS = os.environ.get("RQDB4AI_FTP_PASS", "Xbrg20042025")
+FTP_HOST = os.environ["RQDB4AI_FTP_HOST"]
+FTP_USER = os.environ["RQDB4AI_FTP_USER"]
+FTP_PASS = os.environ["RQDB4AI_FTP_PASS"]
 remote_dir = os.environ.get("RQDB4AI_FTP_REMOTE_DIR", "").strip()
 if not remote_dir:
     raise RuntimeError("RQDB4AI_FTP_REMOTE_DIR is required, for example: web/<public-site-folder>")

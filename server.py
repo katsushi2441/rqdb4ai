@@ -27,7 +27,7 @@ from serializers import serialize_job
 
 
 app = FastAPI(
-    title="Kurage RQ Dashboard for AI",
+    title=os.environ.get("RQDB4AI_API_TITLE", "RQDB4AI"),
     version="0.1.0",
     description="Generic RQ/Redis job dashboard API for humans and AI agents.",
 )
@@ -130,7 +130,7 @@ def healthz() -> dict[str, Any]:
 def capabilities(identity: TokenIdentity = Depends(require_identity)) -> dict[str, Any]:
     return {
         "ok": True,
-        "project": "Kurage RQ Dashboard for AI",
+        "project": os.environ.get("RQDB4AI_PROJECT_NAME", "RQDB4AI"),
         "folder": "rqdb4ai",
         "role": identity.role,
         "features": [
@@ -297,7 +297,7 @@ def enqueue_sample(identity: TokenIdentity = Depends(require_identity)) -> dict[
     queue = get_queue(queue_name)
     job = queue.enqueue(
         "sample_jobs.echo_job",
-        message="Kurage RQ Dashboard for AI sample job",
+        message="RQDB4AI sample job",
         meta={"project": "rqdb4ai", "kind": "sample"},
         result_ttl=86400,
         failure_ttl=604800,

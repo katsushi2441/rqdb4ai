@@ -1,5 +1,5 @@
 #!/bin/sh
-cd /home/kojima/work/rqdb4ai || exit 1
+cd "$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)" || exit 1
 exec env \
   RQDB4AI_API_TOKEN="${RQDB4AI_API_TOKEN:?RQDB4AI_API_TOKEN required}" \
   RQDB4AI_API_TOKEN_ROLE="${RQDB4AI_API_TOKEN_ROLE:-admin}" \
