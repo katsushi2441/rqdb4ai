@@ -172,7 +172,11 @@ def _job_ids_for(queue: Queue, status: str, offset: int, limit: int) -> list[str
         return list(jobs)
     if status not in regs:
         return []
-    return list(regs[status].get_job_ids(offset, limit))
+    # Registry get_job_ids uses (start, end), not (offset, length). RQ stores
+    # registry entries oldest-first by default, so desc=True is required for
+    # dashboards to show the latest completed/failed jobs first.
+    end = offset + limit - 1
+    return list(regs[status].get_job_ids(start=offset, end=end, desc=True))
 
 
 def list_jobs(queue_name: str | None, status: str | None, limit: int, offset: int) -> dict[str, Any]:
