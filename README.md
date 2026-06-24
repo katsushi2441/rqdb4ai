@@ -93,3 +93,8 @@ python3 -m rq worker rqdb4ai-sample --url redis://127.0.0.1:6379/0
 ```
 
 Application-specific worker scripts should live in the application repository, not in `rqdb4ai`.
+When a kdeck goal enqueues an application job, the RQ worker environment must
+include that application repository on `PYTHONPATH`. For example,
+`kagentreach_jobs.run_daily_digest_job` requires `/home/kojima/work/kagentreach`
+on the worker `PYTHONPATH`; the job implementation still belongs to
+`kagentreach`, not to `rqdb4ai`.
