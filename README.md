@@ -19,6 +19,12 @@ It is designed to be independent from any specific application. Application repo
 - `DELETE /api/jobs/{id}`
 - `POST /api/enqueue`
 - `POST /api/sample/enqueue`
+
+An `operate` token can enqueue `sample_jobs.*` and exact application entrypoints
+listed in the comma-separated `RQDB4AI_OPERATE_ENQUEUE_FUNCTIONS` environment
+variable. Other functions still require an `admin` token. This lets public web
+applications enqueue one narrowly scoped job without storing an unrestricted
+RQDB4AI credential.
 - `POST /api/bulk/requeue`
 
 ## Web UI

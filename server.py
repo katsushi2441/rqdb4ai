@@ -66,6 +66,16 @@ def configured_execution_queues() -> list[str]:
     return [name.strip() for name in raw.split(",") if name.strip()]
 
 
+def operate_enqueue_functions() -> set[str]:
+    """Return exact function names an operate token may enqueue.
+
+    Application code remains outside rqdb4ai. Deployments opt specific entrypoints
+    in through configuration instead of sharing an unrestricted admin token.
+    """
+    raw = os.environ.get("RQDB4AI_OPERATE_ENQUEUE_FUNCTIONS", "")
+    return {name.strip() for name in raw.split(",") if name.strip()}
+
+
 def default_queue_for_class(queue_class: str) -> str:
     configured = configured_execution_queues()
     suffix = f"-{queue_class}"
@@ -274,7 +284,7 @@ def job_delete(job_id: str, identity: TokenIdentity = Depends(require_identity))
 @app.post("/api/enqueue")
 def enqueue(req: EnqueueRequest, identity: TokenIdentity = Depends(require_identity)) -> dict[str, Any]:
     require_role(identity, "operate")
-    if not req.function.startswith("sample_jobs."):
+    if not req.function.startswith("sample_jobs.") and req.function not in operate_enqueue_functions():
         require_role(identity, "admin")
     queue_name, meta = resolve_queue(req)
     queue = get_queue(queue_name)
