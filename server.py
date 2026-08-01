@@ -23,7 +23,7 @@ from rq_client import (
     redis_url,
     requeue_job,
 )
-from serializers import serialize_job
+from serializers import job_status, safe_json_value, serialize_job
 
 
 app = FastAPI(
@@ -252,6 +252,30 @@ def job_detail(job_id: str, identity: TokenIdentity = Depends(require_identity))
     except Exception as exc:
         raise HTTPException(status_code=404, detail=str(exc))
     return {"ok": True, "job": serialize_job(job, detail=True)}
+
+
+@app.get("/api/jobs/{job_id}/result")
+def job_result(job_id: str, identity: TokenIdentity = Depends(require_identity)) -> dict[str, Any]:
+    """Return a completed job result without the dashboard preview truncation.
+
+    Large application results such as generated image payloads must remain
+    retrievable by an authenticated gateway. Normal job detail stays capped so
+    the dashboard cannot accidentally render multi-megabyte fields.
+    """
+    try:
+        job = fetch_job(job_id)
+    except Exception as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
+    status = job_status(job)
+    if status != "finished":
+        raise HTTPException(status_code=409, detail=f"job is not finished: {status}")
+    max_chars = max(1, int(os.environ.get("RQDB4AI_RESULT_MAX_CHARS", "10000000")))
+    return {
+        "ok": True,
+        "job_id": job_id,
+        "status": status,
+        "result": safe_json_value(getattr(job, "result", None), max_chars),
+    }
 
 
 @app.get("/api/jobs/{job_id}/logs")
