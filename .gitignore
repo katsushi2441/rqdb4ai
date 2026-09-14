@@ -11,3 +11,10 @@ web/config.php
 run_worker_with_*_env.sh
 
 .DS_Store
+
+# 退避ファイルを絶対に混ぜない。rqdb4ai.env.bak-YYYYMMDD は *.env に当たらず
+# untracked のまま残るので、git add -A で秘密ごと入る（2026-09-14 に気づいた）。
+.env.*
+*.bak
+*.bak-*
+*.env.bak*
